@@ -90,7 +90,7 @@ export const BATTLE_RULES = {
   flawlessBonusRate: 0.15, // 무결점이면 +0.15
   drawDamage: 8, // 비김 시 더 빨리 친 쪽이 주는 피해
   gaugeMax: 3, // 무결점 문장 3개로 필살 게이지 완충
-  finisherTimeLimit: 20,
+  finisherTimeLimit: 25, // 필살 문장이 최대 19자(표준어 박사 23자)라, 보통 학생(180타 안팎)도 대부분 성공하도록 (모의 대결 2026-11-06)
   relaxedBonusSec: 5, // 여유 모드에서 늘어나는 제한시간(초)
   finisherHpRate: 1 / 3, // 필살기 피해 = 보스 체력의 1/3 (5 단위 반올림, 일반 승리 피해보다 확실히 크게)
   shieldEvery: 2, // (옵션) 무결점 2번마다 방패 1개, 최대 1개

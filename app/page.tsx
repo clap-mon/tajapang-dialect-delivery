@@ -68,8 +68,8 @@ export default function Home() {
 
       {/* 메인 랜딩 뷰 (예전 크기의 80%, 그림은 화면 높이에 맞춰 줄어듦) */}
       <div className="card-container !p-5 max-w-[400px] w-full text-center flex flex-col items-center gap-3">
-        {/* 일러스트 액자 영역: 화면 높이에서 아래 내용 높이를 뺀 만큼, 최소 200px */}
-        <div className="w-[clamp(200px,calc(100dvh-486px),100%)] aspect-square rounded-2xl border-4 border-black shadow-[4px_4px_0px_#000] overflow-hidden bg-[#FAF9F5] relative">
+        {/* 일러스트 액자 영역: 화면 높이에서 아래 내용 높이를 뺀 만큼, 최소 140px (아이쌤GPT 창 안처럼 낮은 화면에서도 스크롤 없이) */}
+        <div className="w-[clamp(140px,calc(100dvh-486px),100%)] aspect-square rounded-2xl border-4 border-black shadow-[4px_4px_0px_#000] overflow-hidden bg-[#FAF9F5] relative">
           <Image
             src="/tajapang_dialect_v1.webp"
             alt="타자팡: 방언 대모험"

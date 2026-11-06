@@ -61,6 +61,9 @@ export default function RacePlay({ onRestart }: { onRestart: () => void }) {
   const router = useRouter();
 
   const [raceData] = useState(loadRaceData);
+  // 세로가 낮은 화면(820 미만)에서는 스탯 카드 줄을 숨기고, 아주 낮으면(640 미만, 아이쌤GPT 창 안 등) 트랙 최소 높이를 줄여 칠판에 자리를 내줌
+  const [compactStage] = useState(() => window.innerHeight < 820);
+  const [shortStage] = useState(() => window.innerHeight < 640);
   const { problemSet, settings, isValid } = raceData;
 
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -447,8 +450,8 @@ export default function RacePlay({ onRestart }: { onRestart: () => void }) {
         {/* 학생용 플레이 및 결과창 화면 */}
         <div className="flex-1 flex gap-2.5 overflow-hidden">
           <div className="flex-1 flex flex-col gap-2 relative">
-            {/* 좁은 화면(1280px 미만)에서 노출되는 스탯 카드 영역 (넓은 화면은 상단 바 헤더로 통합) */}
-            <div className="flex justify-center gap-1.5 xl:hidden">
+            {/* 좁은 화면(1280px 미만)에서 노출되는 스탯 카드 영역 (넓은 화면은 상단 바 헤더로 통합, 세로까지 낮으면 칠판 공간을 위해 숨김) */}
+            <div className={`${compactStage ? 'hidden' : 'flex'} justify-center gap-1.5 xl:hidden`}>
               <StatCard label="현재 타수" value={Math.floor(cpm)} subLabel="타" color="text-indigo-600" bgColor="bg-[#FFDE4D]" rotation="-rotate-1" />
               <StatCard label="정확도" value={`${Math.floor(accuracy)}%`} color="text-emerald-500" bgColor="bg-[#FFB0B0]" rotation="rotate-2" />
               <StatCard label="무결점 성공" value={combo} subLabel="회" color="text-amber-500" bgColor="bg-[#BFF6C3]" rotation="-rotate-2" />
@@ -456,7 +459,7 @@ export default function RacePlay({ onRestart }: { onRestart: () => void }) {
             </div>
             <div
               onClick={() => { if (!isFinished) inputRef.current?.focus(); }}
-              className="flex-1 max-h-[320px] bg-classroom-chalkboard rounded-[24px] border-[6px] border-black shadow-[6px_6px_0px_#000] p-4 md:p-5 flex flex-col items-center justify-center relative overflow-hidden cursor-pointer"
+              className={`flex-1 max-h-[320px] bg-classroom-chalkboard rounded-[24px] border-[6px] border-black shadow-[6px_6px_0px_#000] ${shortStage ? 'p-2' : 'p-4 md:p-5'} flex flex-col items-center justify-center relative overflow-hidden cursor-pointer`}
             >
               <div className="absolute inset-0 opacity-10 bg-chalk-dust"></div>
               {/* 칠판 구석에 띄우는 백스페이스 누적 카운트 (이의제기 방지용) */}
@@ -712,7 +715,7 @@ export default function RacePlay({ onRestart }: { onRestart: () => void }) {
 
         {/* 달리기 트랙 영역 (3줄 줌인 + 우측 세로 미니맵) */}
         <div
-          className="bg-white p-3 rounded-[28px] border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden relative transition-all duration-300 w-full flex-1 min-h-[260px]"
+          className={`bg-white p-3 rounded-[28px] border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden relative transition-all duration-300 w-full ${shortStage ? 'flex-[0.8] min-h-[160px]' : 'flex-1 min-h-[260px]'}`}
         >
           <div className="absolute top-0 left-0 right-0 h-1 bg-carbon-stripe opacity-30"></div>
           <div className="flex-1 flex gap-2 overflow-hidden h-full">

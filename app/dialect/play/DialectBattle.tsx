@@ -233,12 +233,14 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
   // 무대 캐릭터 크기: 화면 세로에 맞춰 (큰 모니터 128 · 노트북 768 112 · 크롬북 720 96 · 브라우저 창이 710보다 낮으면 72)
   const [stageCharSize] = useState(() => {
     const h = window.innerHeight;
-    return h >= 900 ? 128 : h >= 760 ? 112 : h >= 710 ? 96 : 72;
+    return h >= 900 ? 128 : h >= 760 ? 112 : h >= 710 ? 96 : h >= 560 ? 72 : 56;
   });
   // 세로가 낮은 화면(노트북 768·크롬북 720 등)에서는 "내가 친 카드" 상자도 조금 작게 해서 체력바가 잘리지 않게
   const [compactStage] = useState(() => window.innerHeight < 820);
   // 브라우저 창이 아주 낮으면(710 미만) 말풍선·캐릭터·체력바 사이 간격도 줄여서 체력바가 무대 밖으로 밀리지 않게
   const [tightStage] = useState(() => window.innerHeight < 710);
+  // 아이쌤GPT 창 안처럼 세로가 아주 낮으면(640 미만) 대결 무대 최소 높이를 줄여 칠판(카드·입력칸)에 자리를 내줌
+  const [shortStage] = useState(() => window.innerHeight < 640);
   const bonusSec = relaxedMode ? R.relaxedBonusSec : 0;
   const cardTimeLimit = boss.stats.timeLimit + bonusSec;
   const finisherTimeLimit = R.finisherTimeLimit + bonusSec;
@@ -731,7 +733,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
     <main className={`bg-[#FFF59D] p-2 flex flex-col justify-between h-screen overflow-hidden ${shake === 'big' ? 'animate-battle-shake-big' : ''}`}>
       {/* 끝난 화면도 한 화면 높이로 고정 (결과 리포트는 자체 스크롤 팝업이라 영향 없음) */}
       {/* 상단 바 (로고 및 모드, 스탯 통합) */}
-      <div className="flex justify-between items-center bg-white py-2 px-4 rounded-[20px] border-4 border-black shadow-[4px_4px_0px_#000] mb-2 w-full gap-3">
+      <div className={`flex justify-between items-center bg-white px-4 rounded-[20px] border-4 border-black shadow-[4px_4px_0px_#000] w-full gap-3 ${shortStage ? 'py-1 mb-1.5' : 'py-2 mb-2'}`}>
         <TajaPangLogo size="sm" />
 
         <div className="hidden xl:flex flex-1 justify-center mx-6 gap-3">
@@ -742,7 +744,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
         </div>
 
         <div className="flex items-center gap-2 md:gap-3 shrink-0">
-          <div className="bg-slate-100 border-4 border-black px-4 py-2 rounded-xl text-center leading-none shadow-[3px_3px_0px_#000]">
+          <div className={`bg-slate-100 border-4 border-black px-4 rounded-xl text-center leading-none shadow-[3px_3px_0px_#000] ${shortStage ? 'py-1' : 'py-2'}`}>
             <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-0.5">{boss.hidden ? '숨겨진 보스' : `${boss.order}단계`}</span>
             <span className="text-xl font-black tracking-wider whitespace-nowrap" style={{ color: boss.color.dark }}>{boss.region} 대결</span>
             {(relaxedMode || fastMode) && (
@@ -771,8 +773,8 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
       <div className="flex-1 flex flex-col p-1 gap-2.5 overflow-hidden">
         <div className="flex-1 flex gap-2.5 overflow-hidden">
           <div className="flex-1 flex flex-col gap-2 relative">
-            {/* 좁은 화면(1280px 미만)에서 노출되는 스탯 카드 영역 (넓은 화면은 상단 바 헤더로 통합) */}
-            <div className="flex justify-center gap-1.5 xl:hidden">
+            {/* 좁은 화면(1280px 미만)에서 노출되는 스탯 카드 영역 (넓은 화면은 상단 바 헤더로 통합, 세로까지 낮으면 칠판 공간을 위해 숨김) */}
+            <div className={`${compactStage ? 'hidden' : 'flex'} justify-center gap-1.5 xl:hidden`}>
               <StatCard label="현재 타수" value={cpm} subLabel="타" color="text-indigo-600" bgColor="bg-[#FFDE4D]" rotation="-rotate-1" />
               <StatCard label="정확도" value={`${accuracy}%`} color="text-emerald-500" bgColor="bg-[#FFB0B0]" rotation="rotate-2" />
               <StatCard label="무결점 성공" value={stats.flawless} subLabel="회" color="text-amber-500" bgColor="bg-[#BFF6C3]" rotation="-rotate-2" />
@@ -782,7 +784,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
             {/* 칠판형 타자 영역 */}
             <div
               onClick={() => { if (isTyping) inputRef.current?.focus(); }}
-              className="flex-1 max-h-[320px] bg-classroom-chalkboard rounded-[24px] border-[6px] border-black shadow-[6px_6px_0px_#000] p-3 md:p-4 flex flex-col items-center justify-center relative overflow-hidden cursor-pointer"
+              className={`flex-1 max-h-[320px] bg-classroom-chalkboard rounded-[24px] border-[6px] border-black shadow-[6px_6px_0px_#000] ${shortStage ? 'p-2' : 'p-3 md:p-4'} flex flex-col items-center justify-center relative overflow-hidden cursor-pointer`}
             >
               <div className="absolute inset-0 opacity-10 bg-chalk-dust"></div>
 
@@ -823,7 +825,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
 
               {/* 가위·바위·보 카드 라운드 / 필살 라운드 공통: 시간 게이지 */}
               {isTyping && (
-                <div className="w-full max-w-5xl z-10 flex flex-col gap-2.5">
+                <div className={`w-full max-w-5xl z-10 flex flex-col ${shortStage ? 'gap-1.5' : 'gap-2.5'}`}>
                   <div className="flex items-center gap-2 pr-28">
                     <span className="bg-white text-slate-900 border-2 border-black text-[10px] font-black px-2 py-0.5 rounded-md shrink-0">{round}라운드</span>
                     <div className="flex-1 h-3 bg-white/10 rounded-full border-2 border-black overflow-hidden">
@@ -855,7 +857,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
                           >
                             {/* 손 모양을 크게: 흰 동그라미 안 손 그림 + 진한 손 이름 (손마다 색이 다름) */}
                             <div className="flex items-center justify-center gap-2 mb-0.5">
-                              <span className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white border-[3px] flex items-center justify-center text-lg md:text-xl shadow-[2px_2px_0px_#000]" style={{ borderColor: HAND_STYLE[hand].color }}>
+                              <span className={`rounded-full bg-white border-[3px] flex items-center justify-center shadow-[2px_2px_0px_#000] ${shortStage ? 'w-7 h-7 text-base' : 'w-8 h-8 md:w-10 md:h-10 text-lg md:text-xl'}`} style={{ borderColor: HAND_STYLE[hand].color }}>
                                 {HAND_INFO[hand].emoji}
                               </span>
                               <span className="text-sm md:text-base font-black" style={{ color: HAND_STYLE[hand].color }}>{HAND_INFO[hand].label}</span>
@@ -867,7 +869,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
                                 <span>{dialect}</span>
                               </p>
                             )}
-                            <p className="text-lg md:text-2xl xl:text-3xl font-bold tracking-tight leading-snug flex flex-wrap justify-center">
+                            <p className={`font-bold tracking-tight leading-snug flex flex-wrap justify-center ${shortStage ? 'text-lg md:text-xl' : 'text-lg md:text-2xl xl:text-3xl'}`}>
                               {(boss.typeStandard ? standard : dialect).split('').map((char, index) => {
                                 let color = index === 0 ? 'text-[#FFE600] font-black' : 'text-white/90';
                                 if (isSelected) {
@@ -918,7 +920,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
                     onBlur={(e) => {
                       if (isTyping) setTimeout(() => e.target.focus(), 10);
                     }}
-                    className={`w-full bg-white/5 border-b-4 ${isError ? 'border-red-400' : 'border-white/10'} text-white text-2xl md:text-3xl p-2 md:p-3 outline-none focus:border-amber-300 transition-all text-center font-bold placeholder:opacity-20`}
+                    className={`w-full bg-white/5 border-b-4 ${isError ? 'border-red-400' : 'border-white/10'} text-white ${shortStage ? 'text-xl p-1.5' : 'text-2xl md:text-3xl p-2 md:p-3'} outline-none focus:border-amber-300 transition-all text-center font-bold placeholder:opacity-20`}
                     placeholder={phase === 'finisher' ? '필살 문장을 끝까지 치세요' : '카드 하나를 골라 치세요'}
                     autoComplete="off"
                   />
@@ -1185,7 +1187,7 @@ export default function DialectBattle({ boss, prevBoss, nextBoss, level, already
         )}
 
         {/* 대결 무대 (1단계 트랙 자리): 학생 vs 보스, 체력바, 말풍선 */}
-        <div className={`bg-white p-3 rounded-[28px] border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden relative transition-all duration-300 w-full flex-1 min-h-[260px] ${shake === 'player' ? 'animate-battle-shake' : ''}`}>
+        <div className={`bg-white p-3 rounded-[28px] border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden relative transition-all duration-300 w-full flex-1 ${shortStage ? 'min-h-[195px]' : 'min-h-[260px]'} ${shake === 'player' ? 'animate-battle-shake' : ''}`}>
           <div
             className="flex-1 rounded-2xl border-2 border-black relative overflow-hidden shadow-inner"
             style={{ background: `linear-gradient(120deg, #F1F5F9 0%, #F8FAFC 45%, ${boss.color.light} 100%)` }}
