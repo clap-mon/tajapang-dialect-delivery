@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-secondary: #fbbf24;
+  --color-accent: #f43f5e;
+  
+  /* Classroom Theme Colors */
+  --color-classroom-bg: #FFF59D; /* 뉴브루탈 시그니처 옐로우 (파스텔 레몬) */
+  --color-classroom-chalkboard: #1e3a2d;
+  --color-classroom-wood: #78350f;
+
+  /* Custom Spacing & Radius */
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+/* Base Styles */
+body {
+  @apply bg-[#f0f3ff] text-slate-900 antialiased;
+  /* 외부 글꼴 없이 기기 기본 고딕 글꼴 사용 (윈도우: 맑은 고딕, 맥: 애플 산돌고딕 네오, 크롬북·안드로이드: 본고딕 계열) */
+  font-family: -apple-system, sans-serif !important;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-indigo-600 text-white border-4 border-black px-6 py-3 rounded-2xl font-bold transition-all shadow-[4px_4px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#000] active:scale-95 cursor-pointer;
+  }
+  
+  .input-field {
+    @apply w-full px-6 py-4 rounded-2xl border-4 border-black text-lg outline-none transition-all focus:bg-indigo-50/50 shadow-[4px_4px_0px_#000];
+  }
+  
+  .card-container {
+    @apply w-full max-w-md bg-white rounded-[32px] border-4 border-black p-8 md:p-12 shadow-[8px_8px_0px_#000] text-center;
+  }
+}
+
+@keyframes road-flow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-48px); }
+}
+
+.animate-road-flow {
+  animation: road-flow 0.8s linear infinite;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+/* ───── 방언 타자 대결 연출 ───── */
+
+/* 타격 시 화면 흔들림 */
+@keyframes battle-shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-8px, 3px); }
+  30% { transform: translate(7px, -4px); }
+  45% { transform: translate(-6px, 2px); }
+  60% { transform: translate(5px, -2px); }
+  75% { transform: translate(-3px, 1px); }
+}
+
+.animate-battle-shake {
+  animation: battle-shake 0.45s ease-in-out;
+}
+
+/* 마지막 일격: 더 크고 긴 흔들림 */
+@keyframes battle-shake-big {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  10% { transform: translate(-14px, 6px) rotate(-1deg); }
+  25% { transform: translate(12px, -8px) rotate(1deg); }
+  40% { transform: translate(-10px, 5px) rotate(-0.5deg); }
+  55% { transform: translate(8px, -4px) rotate(0.5deg); }
+  70% { transform: translate(-5px, 2px); }
+  85% { transform: translate(3px, -1px); }
+}
+
+.animate-battle-shake-big {
+  animation: battle-shake-big 0.9s ease-in-out;
+}
+
+/* 피해 숫자 떠오르기 */
+@keyframes damage-float {
+  0% { opacity: 0; transform: translate(-50%, 10px) scale(0.6); }
+  20% { opacity: 1; transform: translate(-50%, -6px) scale(1.25); }
+  100% { opacity: 0; transform: translate(-50%, -48px) scale(1); }
+}
+
+.animate-damage-float {
+  animation: damage-float 1.4s ease-out forwards;
+}
+
+/* 카드 공개 (뒤집기) */
+@keyframes card-flip {
+  0% { transform: rotateY(90deg) scale(0.8); opacity: 0; }
+  100% { transform: rotateY(0) scale(1); opacity: 1; }
+}
+
+.animate-card-flip {
+  animation: card-flip 0.35s ease-out;
+}
+
+/* 개인 연습 달리기: 배움팡이 콩콩 뛰며 달려감 */
+@keyframes pang-run {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-9px) rotate(4deg); }
+}
+
+.animate-pang-run {
+  animation: pang-run 0.42s ease-in-out infinite;
+}
+
+/* 가위바위보 구호마다 주먹 흔들기 */
+@keyframes fist-shake {
+  0% { transform: translateY(0) rotate(0); }
+  40% { transform: translateY(-16px) rotate(-10deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+.animate-fist-shake {
+  animation: fist-shake 0.35s ease-out;
+}
+
+/* 구호·결과 글자 튀어나오기 */
+@keyframes shout-pop {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-shout-pop {
+  animation: shout-pop 0.3s ease-out;
+}
+
+/* 마지막 일격 화면 번쩍임 */
+@keyframes ko-flash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+.animate-ko-flash {
+  animation: ko-flash 0.8s ease-out forwards;
+}
+
+/* 숨겨진 보스 도전 버튼 반짝임 */
+@keyframes hidden-glow {
+  0%, 100% { box-shadow: 4px 4px 0px #000, 0 0 0 0 rgba(167, 139, 250, 0.0); }
+  50% { box-shadow: 4px 4px 0px #000, 0 0 18px 6px rgba(167, 139, 250, 0.85); }
+}
+
+.animate-hidden-glow {
+  animation: hidden-glow 1.6s ease-in-out infinite;
+}
+
+/* 칠판 분필 가루 무늬 (외부 그림 없이 직접 만든 무늬, 저작권·외부 요청 걱정 없음) */
+.bg-chalk-dust {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 개인 연습 트랙 위쪽 가는 줄무늬 (직접 만든 무늬) */
+.bg-carbon-stripe {
+  background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.7) 0 2px, transparent 2px 4px);
+}
